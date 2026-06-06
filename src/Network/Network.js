@@ -17,6 +17,7 @@ import copy from 'licia/copy'
 import extend from 'licia/extend'
 import trim from 'licia/trim'
 import isNull from 'licia/isNull'
+import isEmpty from 'licia/isEmpty'
 import LunaModal from 'luna-modal'
 import { curlStr } from './util'
 
@@ -233,7 +234,6 @@ export default class Network extends Tool {
             'User-Agent': navigator.userAgent,
             Referer: location.href,
           })
-
           return map(reqHeaders, (value, name) => {
             return {
               name,
@@ -245,6 +245,70 @@ export default class Network extends Tool {
     )
 
     this._container.notify('Copied', { icon: 'success' })
+  }
+  _exportMd = () => {
+    let md = ''
+    let count = 1
+
+    each(this._requests, (request) => {
+      md += `${count}\n\n`
+
+      const curl = curlStr({
+        requestMethod: request.method,
+        url() {
+          return request.url
+        },
+        requestFormData() {
+          return request.data
+        },
+        requestHeaders() {
+          const reqHeaders = request.reqHeaders || {}
+          extend(reqHeaders, {
+            'User-Agent': navigator.userAgent,
+            Referer: location.href,
+          })
+          return map(reqHeaders, (value, name) => {
+            return {
+              name,
+              value,
+            }
+          })
+        },
+      })
+      md += `\`\`\`\n${curl}\n\`\`\`\n\n`
+
+      let data = `${request.method} ${request.url} ${request.status}\n`
+      if (!isEmpty(request.data)) {
+        data += '\nRequest Data\n\n'
+        data += `${request.data}\n`
+      }
+      if (!isEmpty(request.reqHeaders)) {
+        data += '\nRequest Headers\n\n'
+        each(request.reqHeaders, (val, key) => (data += `${key}: ${val}\n`))
+      }
+      if (!isEmpty(request.resHeaders)) {
+        data += '\nResponse Headers\n\n'
+        each(request.resHeaders, (val, key) => (data += `${key}: ${val}\n`))
+      }
+      if (request.resTxt) {
+        data += `\n${request.resTxt}\n`
+      }
+      md += `\`\`\`\n${data}\n\`\`\`\n\n`
+      count++
+    })
+
+    if (md === '') {
+      this._container.notify('No requests to export', { icon: 'error' })
+      return
+    }
+
+    const blob = new Blob([md], { type: 'text/markdown' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'network.md'
+    a.click()
+    URL.revokeObjectURL(url)
   }
   _updateButtons() {
     const $control = this._$control
@@ -283,6 +347,7 @@ export default class Network extends Tool {
       .on('click', c('.clear-request'), () => this.clear())
       .on('click', c('.show-detail'), this._showDetail)
       .on('click', c('.copy-curl'), this._copyCurl)
+      .on('click', c('.export-md'), this._exportMd)
       .on('click', c('.record'), this._toggleRecording)
       .on('click', c('.filter'), () => {
         LunaModal.prompt('Filter').then((filter) => {
@@ -365,6 +430,9 @@ export default class Network extends Tool {
           <span class="icon-clear clear-request"></span>
           <span class="icon-eye icon-disabled show-detail"></span>
           <span class="icon-copy icon-disabled copy-curl"></span>
+          <span class="export-md" title="Export to Markdown" style="display:inline-flex;width:16px;height:16px;margin:4px 0 0 10px;cursor:pointer;vertical-align:top;align-items:center;justify-content:center;">
+             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="100%" height="100%"><path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L120,43.31V96a8,8,0,0,0,16,0Z"/></svg>
+          </span>
           <span class="filter-text"></span>
           <span class="icon-filter filter"></span>
         </div>
