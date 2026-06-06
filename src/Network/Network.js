@@ -444,14 +444,15 @@ export default class Network extends Tool {
     this._$control = $el.find(c('.control'))
     this._$filterText = $el.find(c('.filter-text'))
     this._$control.find(c('.export-md')).css({
-      display: 'inline-flex',
-      width: '16px',
-      height: '16px',
-      margin: '4px 0 0 10px',
-      cursor: 'pointer',
-      verticalAlign: 'top',
+      position: 'absolute',
+      display: 'flex',
       alignItems: 'center',
-      justifyContent: 'center'
-    }).html('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="100%" height="100%"><path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L120,43.31V96a8,8,0,0,0,16,0Z"/></svg>')
+      justifyContent: 'center',
+      cursor: 'pointer',
+      top: '0',
+      bottom: '0',
+      width: '23px',
+      color: 'inherit'
+    }).html('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="16px" height="16px"><path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L120,43.31V96a8,8,0,0,0,16,0Z"/></svg>')
   }
 }

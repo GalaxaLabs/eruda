@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//storage/emulated/0/DCIM/Screenshots/**)"
+    ]
+  }
+}

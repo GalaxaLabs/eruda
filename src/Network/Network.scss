@@ -22,8 +22,11 @@
     .icon-copy {
       right: 23px;
     }
-    .icon-filter {
+    .export-md {
       right: 46px;
+    }
+    .icon-filter {
+      right: 69px;
     }
     .filter-text {
       white-space: nowrap;
@@ -31,7 +34,7 @@
       line-height: 20px;
       max-width: 80px;
       overflow: hidden;
-      right: 88px;
+      right: 111px;
       font-size: $font-size;
       text-overflow: ellipsis;
     }
