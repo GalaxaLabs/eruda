@@ -430,9 +430,7 @@ export default class Network extends Tool {
           <span class="icon-clear clear-request"></span>
           <span class="icon-eye icon-disabled show-detail"></span>
           <span class="icon-copy icon-disabled copy-curl"></span>
-          <span class="export-md" title="Export to Markdown" style="display:inline-flex;width:16px;height:16px;margin:4px 0 0 10px;cursor:pointer;vertical-align:top;align-items:center;justify-content:center;">
-             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="100%" height="100%"><path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L120,43.31V96a8,8,0,0,0,16,0Z"/></svg>
-          </span>
+          <span class="export-md" title="Export to Markdown"></span>
           <span class="filter-text"></span>
           <span class="icon-filter filter"></span>
         </div>
@@ -445,5 +443,15 @@ export default class Network extends Tool {
     this._$requests = $el.find(c('.requests'))
     this._$control = $el.find(c('.control'))
     this._$filterText = $el.find(c('.filter-text'))
+    this._$control.find(c('.export-md')).css({
+      display: 'inline-flex',
+      width: '16px',
+      height: '16px',
+      margin: '4px 0 0 10px',
+      cursor: 'pointer',
+      verticalAlign: 'top',
+      alignItems: 'center',
+      justifyContent: 'center'
+    }).html('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="100%" height="100%"><path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L120,43.31V96a8,8,0,0,0,16,0Z"/></svg>')
   }
 }
