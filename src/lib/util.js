@@ -109,18 +109,26 @@ export function classPrefix(str) {
   if (/<[^>]*>/g.test(str)) {
     try {
       const tree = html.parse(str)
-      traverseTree(tree, (node) => {
-        if (node.attrs && node.attrs.class) {
-          node.attrs.class = processClass(node.attrs.class)
-        }
-      })
-      return html.stringify(tree)
+      if (tree.length) {
+        traverseTree(tree, (node) => {
+          if (node.attrs && node.attrs.class) {
+            node.attrs.class = processClass(node.attrs.class)
+          }
+        })
+        return html.stringify(tree)
+      }
     } catch {
-      return processClass(str)
+      // fallthrough to regex fallback
     }
   }
 
-  return processClass(str)
+  return str.replace(/class\s*=\s*"([^"]*)"/g, (match, classStr) => {
+    const newClasses = map(trim(classStr).split(/\s+/), (singleClass) => {
+      if (contain(singleClass, 'eruda-')) return singleClass
+      return singleClass.replace(/[\w-]+/, (m) => `eruda-${m}`)
+    }).join(' ')
+    return `class="${newClasses}"`
+  })
 }
 
 function traverseTree(tree, handler) {

@@ -77,7 +77,7 @@ export default class Resources extends Tool {
     this._rmCfg()
   }
   _getScriptData() {
-    let scriptData = []
+    const scriptData = []
 
     $('script').each(function () {
       const src = this.src
@@ -119,7 +119,7 @@ export default class Resources extends Tool {
     return this
   }
   _getStylesheetData() {
-    let stylesheetData = []
+    const stylesheetData = []
 
     $('link').each(function () {
       if (this.rel !== 'stylesheet') return
@@ -161,7 +161,7 @@ export default class Resources extends Tool {
     return this
   }
   _getIframeData() {
-    let iframeData = []
+    const iframeData = []
 
     $('iframe').each(function () {
       const $this = $(this)

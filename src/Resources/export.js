@@ -98,7 +98,7 @@ function getPathPrefix() {
   return pathname
     .split('/')
     .filter(Boolean)
-    .map((part) => part.replace(/\.[^.\/]+$/, ''))
+    .map((part) => part.replace(/\.[^./]+$/, ''))
     .filter(Boolean)
 }
 
