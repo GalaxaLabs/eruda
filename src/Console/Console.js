@@ -18,6 +18,8 @@ import Settings from '../Settings/Settings'
 import LunaConsole from 'luna-console'
 import LunaModal from 'luna-modal'
 import { classPrefix as c } from '../lib/util'
+import each from 'licia/each'
+import { downloadMarkdown, getExportFileName } from '../Resources/export'
 
 uncaught.start()
 
@@ -148,6 +150,7 @@ export default class Console extends Tool {
         <span class="level" data-level="error">Error</span>
         <span class="filter-text"></span>
         <span class="icon-filter filter"></span>
+        <span class="export-console" title="Export to Markdown"></span>
         <span class="icon-copy icon-disabled copy"></span>
       </div>
       <div class="logs-container"></div>
@@ -174,6 +177,22 @@ export default class Console extends Tool {
       _$inputBtns,
       _$filterText: $el.find(c('.filter-text')),
     })
+
+    this._$control.find(c('.export-console')).css({
+      position: 'absolute',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      top: '0',
+      padding: '10px',
+      width: '36px',
+      height: '36px',
+      boxSizing: 'border-box',
+      color: 'inherit',
+    }).html(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="16px" height="16px"><path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L120,43.31V96a8,8,0,0,0,16,0Z"/></svg>'
+    )
   }
   _initLogger() {
     const cfg = this.config
@@ -222,6 +241,24 @@ export default class Console extends Tool {
         })
     )
   }
+  _export = () => {
+    let md = '# Console Logs\n\n'
+    let hasLogs = false
+
+    each(this._logger.logs, (log) => {
+      hasLogs = true
+      const time = log.header ? `[${log.header.time}] ` : ''
+      const from = log.header && log.header.from ? ` (${log.header.from})` : ''
+      md += `${time}${log.type.toUpperCase()}: ${log.text()}${from}\n\n`
+    })
+
+    if (!hasLogs) {
+      this._container.notify('No logs to export', { icon: 'error' })
+      return
+    }
+
+    downloadMarkdown(getExportFileName('console'), md)
+  }
   _bindEvent() {
     const container = this._container
     const $input = this._$input
@@ -250,6 +287,7 @@ export default class Console extends Tool {
         this._selectedLog.copy()
         container.notify('Copied', { icon: 'success' })
       })
+      .on('click', c('.export-console'), this._export)
 
     $inputBtns
       .on('click', c('.cancel'), () => this._hideInput())

@@ -19,8 +19,11 @@
     .icon-copy {
       right: 0;
     }
-    .icon-filter {
+    .export-console {
       right: 23px;
+    }
+    .icon-filter {
+      right: 46px;
     }
     .level {
       cursor: pointer;
@@ -42,7 +45,7 @@
       line-height: 20px;
       max-width: 80px;
       overflow: hidden;
-      right: 55px;
+      right: 78px;
       font-size: $font-size;
       text-overflow: ellipsis;
     }
