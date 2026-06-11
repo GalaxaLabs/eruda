@@ -138,7 +138,6 @@ export default class Storage {
       <div class="btn refresh-storage">
         <span class="icon icon-refresh"></span>
       </div>
-      ${exportButtonHtml('export-storage')}
       <div class="btn show-detail btn-disabled">
         <span class="icon icon-eye"></span>
       </div>
@@ -151,6 +150,7 @@ export default class Storage {
       <div class="btn clear-storage">
         <span class="icon icon-clear"></span>
       </div>
+      ${exportButtonHtml('export-storage')}
       <div class="btn filter">
         <span class="icon icon-filter"></span>
       </div>

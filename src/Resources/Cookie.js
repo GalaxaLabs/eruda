@@ -88,7 +88,6 @@ export default class Cookie {
       <div class="btn refresh-cookie">
         <span class="icon-refresh"></span>
       </div>
-      ${exportButtonHtml('export-cookie')}
       <div class="btn show-detail btn-disabled">
         <span class="icon icon-eye"></span>
       </div>
@@ -101,6 +100,7 @@ export default class Cookie {
       <div class="btn clear-cookie">
         <span class="icon-clear"></span>
       </div>
+      ${exportButtonHtml('export-cookie')}
       <div class="btn filter" data-type="cookie">
         <span class="icon-filter"></span>
       </div>
