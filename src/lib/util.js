@@ -120,15 +120,17 @@ export function classPrefix(str) {
     } catch {
       // fallthrough to regex fallback
     }
+
+    return str.replace(/class\s*=\s*"([^"]*)"/g, (match, classStr) => {
+      const newClasses = map(trim(classStr).split(/\s+/), (singleClass) => {
+        if (contain(singleClass, 'eruda-')) return singleClass
+        return singleClass.replace(/[\w-]+/, (m) => `eruda-${m}`)
+      }).join(' ')
+      return `class="${newClasses}"`
+    })
   }
 
-  return str.replace(/class\s*=\s*"([^"]*)"/g, (match, classStr) => {
-    const newClasses = map(trim(classStr).split(/\s+/), (singleClass) => {
-      if (contain(singleClass, 'eruda-')) return singleClass
-      return singleClass.replace(/[\w-]+/, (m) => `eruda-${m}`)
-    }).join(' ')
-    return `class="${newClasses}"`
-  })
+  return processClass(str)
 }
 
 function traverseTree(tree, handler) {
