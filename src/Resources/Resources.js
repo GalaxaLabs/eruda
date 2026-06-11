@@ -13,6 +13,12 @@ import toArr from 'licia/toArr'
 import concat from 'licia/concat'
 import map from 'licia/map'
 import { isErudaEl, classPrefix as c } from '../lib/util'
+import {
+  downloadMarkdown,
+  exportButtonHtml,
+  formatListMarkdown,
+  getExportFileName,
+} from './export'
 import evalCss from '../lib/evalCss'
 import Storage from './Storage'
 import Cookie from './Cookie'
@@ -70,7 +76,7 @@ export default class Resources extends Tool {
     evalCss.remove(this._style)
     this._rmCfg()
   }
-  refreshScript() {
+  _getScriptData() {
     let scriptData = []
 
     $('script').each(function () {
@@ -79,7 +85,10 @@ export default class Resources extends Tool {
       if (src !== '') scriptData.push(src)
     })
 
-    scriptData = unique(scriptData)
+    return unique(scriptData)
+  }
+  refreshScript() {
+    const scriptData = this._getScriptData()
 
     const scriptState = getState('script', scriptData.length)
     let scriptDataHtml = '<li>Empty</li>'
@@ -97,6 +106,7 @@ export default class Resources extends Tool {
       <div class="${c('btn refresh-script')}">
         <span class="${c('icon-refresh')}"></span>
       </div>
+      ${exportButtonHtml('export-script')}
     </h2>
     <ul class="${c('link-list')}">
       ${scriptDataHtml}
@@ -108,7 +118,7 @@ export default class Resources extends Tool {
 
     return this
   }
-  refreshStylesheet() {
+  _getStylesheetData() {
     let stylesheetData = []
 
     $('link').each(function () {
@@ -117,7 +127,10 @@ export default class Resources extends Tool {
       stylesheetData.push(this.href)
     })
 
-    stylesheetData = unique(stylesheetData)
+    return unique(stylesheetData)
+  }
+  refreshStylesheet() {
+    const stylesheetData = this._getStylesheetData()
 
     const stylesheetState = getState('stylesheet', stylesheetData.length)
     let stylesheetDataHtml = '<li>Empty</li>'
@@ -135,6 +148,7 @@ export default class Resources extends Tool {
       <div class="${c('btn refresh-stylesheet')}">
         <span class="${c('icon-refresh')}"></span>
       </div>
+      ${exportButtonHtml('export-stylesheet')}
     </h2>
     <ul class="${c('link-list')}">
       ${stylesheetDataHtml}
@@ -146,7 +160,7 @@ export default class Resources extends Tool {
 
     return this
   }
-  refreshIframe() {
+  _getIframeData() {
     let iframeData = []
 
     $('iframe').each(function () {
@@ -156,7 +170,10 @@ export default class Resources extends Tool {
       if (src) iframeData.push(src)
     })
 
-    iframeData = unique(iframeData)
+    return unique(iframeData)
+  }
+  refreshIframe() {
+    const iframeData = this._getIframeData()
 
     let iframeDataHtml = '<li>Empty</li>'
     if (!isEmpty(iframeData)) {
@@ -172,6 +189,7 @@ export default class Resources extends Tool {
       <div class="${c('btn refresh-iframe')}">
         <span class="${c('icon-refresh')}"></span>
       </div>
+      ${exportButtonHtml('export-iframe')}
     </h2>
     <ul class="${c('link-list')}">
       ${iframeDataHtml}
@@ -196,7 +214,7 @@ export default class Resources extends Tool {
 
     return this
   }
-  refreshImage() {
+  _getImageData() {
     let imageData = []
 
     const performance = (this._performance =
@@ -227,6 +245,11 @@ export default class Resources extends Tool {
     imageData = unique(imageData)
     imageData.sort()
 
+    return imageData
+  }
+  refreshImage() {
+    const imageData = this._getImageData()
+
     const imageState = getState('image', imageData.length)
     let imageDataHtml = '<li>Empty</li>'
     if (!isEmpty(imageData)) {
@@ -243,6 +266,7 @@ export default class Resources extends Tool {
       <div class="${c('btn refresh-image')}">
         <span class="${c('icon-refresh')}"></span>
       </div>
+      ${exportButtonHtml('export-image')}
     </h2>
     <ul class="${c('image-list')}">
       ${imageDataHtml}
@@ -253,6 +277,18 @@ export default class Resources extends Tool {
     $image.html(imageHtml)
 
     return this
+  }
+  _exportList(title, data, filename) {
+    const md = formatListMarkdown(title, data)
+
+    if (!md) {
+      this._container.notify(`No ${title.toLowerCase()} items to export`, {
+        icon: 'error',
+      })
+      return
+    }
+
+    downloadMarkdown(getExportFileName(filename), md)
   }
   show() {
     super.show()
@@ -289,30 +325,46 @@ export default class Resources extends Tool {
     const container = this._container
 
     $el
-      .on('click', '.eruda-refresh-script', () => {
+      .on('click', c('.refresh-script'), () => {
         container.notify('Refreshed', { icon: 'success' })
         this.refreshScript()
       })
-      .on('click', '.eruda-refresh-stylesheet', () => {
+      .on('click', c('.export-script'), () => {
+        this._exportList('Script', this._getScriptData(), 'scripts')
+      })
+      .on('click', c('.refresh-stylesheet'), () => {
         container.notify('Refreshed', { icon: 'success' })
         this.refreshStylesheet()
       })
-      .on('click', '.eruda-refresh-iframe', () => {
+      .on('click', c('.export-stylesheet'), () => {
+        this._exportList(
+          'Stylesheet',
+          this._getStylesheetData(),
+          'stylesheets'
+        )
+      })
+      .on('click', c('.refresh-iframe'), () => {
         container.notify('Refreshed', { icon: 'success' })
         this.refreshIframe()
       })
-      .on('click', '.eruda-refresh-image', () => {
+      .on('click', c('.export-iframe'), () => {
+        this._exportList('Iframe', this._getIframeData(), 'iframes')
+      })
+      .on('click', c('.refresh-image'), () => {
         container.notify('Refreshed', { icon: 'success' })
         this.refreshImage()
       })
-      .on('click', '.eruda-img-link', function () {
+      .on('click', c('.export-image'), () => {
+        this._exportList('Image', this._getImageData(), 'images')
+      })
+      .on('click', c('.img-link'), function () {
         const src = $(this).attr('src')
 
         showSources('img', src)
       })
-      .on('click', '.eruda-css-link', linkFactory('css'))
-      .on('click', '.eruda-js-link', linkFactory('js'))
-      .on('click', '.eruda-iframe-link', linkFactory('iframe'))
+      .on('click', c('.css-link'), linkFactory('css'))
+      .on('click', c('.js-link'), linkFactory('js'))
+      .on('click', c('.iframe-link'), linkFactory('iframe'))
 
     function showSources(type, data) {
       const sources = container.get('sources')

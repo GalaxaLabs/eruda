@@ -9,6 +9,12 @@ import trim from 'licia/trim'
 import copy from 'licia/copy'
 import emitter from '../lib/emitter'
 import { safeStorage, classPrefix as c } from '../lib/util'
+import {
+  downloadMarkdown,
+  exportButtonHtml,
+  formatStorageMarkdown,
+  getExportFileName,
+} from './export'
 
 export default class Storage {
   constructor($container, devtools, resources, type) {
@@ -88,6 +94,23 @@ export default class Storage {
 
     this._storeData = storeData
   }
+  _export = () => {
+    const type = this._type
+    const title = type === 'local' ? 'Local' : 'Session'
+    const md = formatStorageMarkdown(title, this._storeData, (key) =>
+      this._getVal(key)
+    )
+
+    if (!md) {
+      this._devtools.notify(
+        `No ${title.toLowerCase()} storage items to export`,
+        { icon: 'error' }
+      )
+      return
+    }
+
+    downloadMarkdown(getExportFileName(`${type}-storage`), md)
+  }
   _updateButtons() {
     const $container = this._$container
     const $showDetail = $container.find(c('.show-detail'))
@@ -115,6 +138,7 @@ export default class Storage {
       <div class="btn refresh-storage">
         <span class="icon icon-refresh"></span>
       </div>
+      ${exportButtonHtml('export-storage')}
       <div class="btn show-detail btn-disabled">
         <span class="icon icon-eye"></span>
       </div>
@@ -158,6 +182,7 @@ export default class Storage {
         devtools.notify('Refreshed', { icon: 'success' })
         this.refresh()
       })
+      .on('click', c('.export-storage'), this._export)
       .on('click', c('.clear-storage'), () => {
         each(this._storeData, (val) => {
           if (type === 'local') {

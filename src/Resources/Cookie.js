@@ -6,6 +6,12 @@ import copy from 'licia/copy'
 import LunaModal from 'luna-modal'
 import LunaDataGrid from 'luna-data-grid'
 import { setState, getState } from './util'
+import {
+  downloadMarkdown,
+  exportButtonHtml,
+  formatCookieMarkdown,
+  getExportFileName,
+} from './export'
 import chobitsu from '../lib/chobitsu'
 import { classPrefix as c } from '../lib/util'
 
@@ -14,6 +20,7 @@ export default class Cookie {
     this._$container = $container
     this._devtools = devtools
     this._selectedItem = null
+    this._cookies = []
 
     this._initTpl()
     this._dataGrid = new LunaDataGrid(this._$dataGrid.get(0), {
@@ -40,6 +47,7 @@ export default class Cookie {
     const dataGrid = this._dataGrid
 
     const { cookies } = chobitsu.domain('Network').getCookies()
+    this._cookies = cookies
     const cookieData = map(cookies, ({ name, value }) => ({
       key: name,
       val: value,
@@ -61,6 +69,16 @@ export default class Cookie {
     const cookieState = getState('cookie', cookieData.length)
     setState($container, cookieState)
   }
+  _export = () => {
+    const md = formatCookieMarkdown(this._cookies)
+
+    if (!md) {
+      this._devtools.notify('No cookies to export', { icon: 'error' })
+      return
+    }
+
+    downloadMarkdown(getExportFileName('cookies'), md)
+  }
   _initTpl() {
     const $container = this._$container
 
@@ -70,6 +88,7 @@ export default class Cookie {
       <div class="btn refresh-cookie">
         <span class="icon-refresh"></span>
       </div>
+      ${exportButtonHtml('export-cookie')}
       <div class="btn show-detail btn-disabled">
         <span class="icon icon-eye"></span>
       </div>
@@ -129,6 +148,7 @@ export default class Cookie {
         devtools.notify('Refreshed', { icon: 'success' })
         this.refresh()
       })
+      .on('click', c('.export-cookie'), this._export)
       .on('click', c('.clear-cookie'), () => {
         chobitsu.domain('Storage').clearDataForOrigin({
           storageTypes: 'cookies',
