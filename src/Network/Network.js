@@ -8,6 +8,7 @@ import throttle from 'licia/throttle'
 import { getFileName, classPrefix as c } from '../lib/util'
 import evalCss from '../lib/evalCss'
 import chobitsu from '../lib/chobitsu'
+import { downloadMarkdown, getExportFileName } from '../Resources/export'
 import emitter from '../lib/emitter'
 import LunaDataGrid from 'luna-data-grid'
 import ResizeSensor from 'licia/ResizeSensor'
@@ -302,13 +303,7 @@ export default class Network extends Tool {
       return
     }
 
-    const blob = new Blob([md], { type: 'text/markdown' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'network.md'
-    a.click()
-    URL.revokeObjectURL(url)
+    downloadMarkdown(getExportFileName('network'), md)
   }
   _updateButtons() {
     const $control = this._$control

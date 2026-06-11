@@ -10,6 +10,7 @@ import escape from 'licia/escape'
 import copy from 'licia/copy'
 import $ from 'licia/$'
 import { classPrefix as c } from '../lib/util'
+import { downloadMarkdown, getExportFileName } from '../Resources/export'
 
 export default class Info extends Tool {
   constructor() {
@@ -24,8 +25,39 @@ export default class Info extends Tool {
     super.init($el)
     this._container = container
 
+    this._initTpl()
     this._addDefInfo()
     this._bindEvent()
+  }
+  _initTpl() {
+    const $el = this._$el
+    $el.html(
+      c(`
+      <div class="control">
+        <span class="title">System Info</span>
+        <span class="export-info" title="Export Info to Markdown"></span>
+      </div>
+      <div class="info-content"></div>
+      `)
+    )
+    this._$control = $el.find(c('.control'))
+    this._$infoContent = $el.find(c('.info-content'))
+
+    this._$control.find(c('.export-info')).css({
+      position: 'absolute',
+      display: 'inline-flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      top: '0',
+      padding: '10px',
+      width: '36px',
+      height: '36px',
+      boxSizing: 'border-box',
+      color: 'inherit',
+    }).html(
+      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="16px" height="16px"><path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L120,43.31V96a8,8,0,0,0,16,0Z"/></svg>'
+    )
   }
   destroy() {
     super.destroy()
@@ -104,6 +136,38 @@ export default class Info extends Tool {
 
     this._renderHtml(html)
   }
+  _export = () => {
+    let md = '# System Info\n\n'
+    let hasInfo = false
+
+    each(this._infos, ({ name, val }) => {
+      hasInfo = true
+      if (isFn(val)) val = val()
+
+      let cleanVal = val
+      if (/<[^>]*>/g.test(val)) {
+        cleanVal = val
+          .replace(/<table><tbody>/gi, '')
+          .replace(/<\/tbody><\/table>/gi, '')
+          .replace(/<tr>/gi, '')
+          .replace(/<\/tr>/gi, '\n')
+          .replace(/<td[^>]*>/gi, '')
+          .replace(/<\/td>/gi, ': ')
+          .replace(/: \n/gi, '\n')
+          .replace(/<a[^>]*href="([^"]*)"[^>]*>.*?<\/a>/gi, '$1')
+          .trim()
+      }
+
+      md += `## ${name}\n\n${cleanVal}\n\n`
+    })
+
+    if (!hasInfo) {
+      this._container.notify('No info to export', { icon: 'error' })
+      return
+    }
+
+    downloadMarkdown(getExportFileName('info'), md)
+  }
   _bindEvent() {
     const container = this._container
 
@@ -114,10 +178,12 @@ export default class Info extends Tool {
       copy(`${name}: ${content}`)
       container.notify('Copied', { icon: 'success' })
     })
+
+    this._$control.on('click', c('.export-info'), this._export)
   }
   _renderHtml(html) {
     if (html === this._lastHtml) return
     this._lastHtml = html
-    this._$el.html(html)
+    this._$infoContent.html(html)
   }
 }

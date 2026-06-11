@@ -2,7 +2,22 @@
 @use '../style/mixin' as *;
 
 #info {
-  @include overflow-auto(y);
+  padding-top: 40px;
+  .control {
+    padding: 10px;
+    @include control();
+    .title {
+      font-size: $font-size;
+      color: var(--primary);
+    }
+    .export-info {
+      right: 0;
+    }
+  }
+  .info-content {
+    @include overflow-auto(y);
+    height: 100%;
+  }
   li {
     margin: 10px;
     border: 1px solid var(--border);

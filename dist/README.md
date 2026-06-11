@@ -61,6 +61,13 @@ It's also available on [jsDelivr](http://www.jsdelivr.com/projects/eruda) and [c
 
 For more detailed usage instructions, please read the documentation at [eruda.liriliri.io](https://eruda.liriliri.io/docs/)!
 
+## Data Export Features
+
+Eruda supports exporting various types of development data directly as Markdown or text files:
+* **Console Logs:** Export all history logs (including level, timestamp, and origin) as a formatted Markdown text file using the export button in the Console panel control bar.
+* **Network Traffic:** Export all network traffic details (methods, URLs, status codes, request/response headers, body payloads, cURL equivalents) in the Network panel.
+* **Resources & Storage:** Export local storage, session storage, cookies, scripts, stylesheets, iframes, and images dynamically in the Resources panel.
+
 ## Related Projects
 
 * [eruda-android](https://github.com/liriliri/eruda-android): Simple webview with eruda loaded automatically.
