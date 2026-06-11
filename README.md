@@ -65,8 +65,10 @@ For more detailed usage instructions, please read the documentation at [eruda.li
 
 Eruda supports exporting various types of development data directly as Markdown or text files:
 * **Console Logs:** Export all history logs (including level, timestamp, and origin) as a formatted Markdown text file using the export button in the Console panel control bar.
-* **Network Traffic:** Export all network traffic details (methods, URLs, status codes, request/response headers, body payloads, cURL equivalents) in the Network panel.
+* **Network Traffic:** Export all network traffic details (methods, URLs, status codes, request/response headers, body payloads, cURL equivalents) in the Network panel using site-specific dynamic filenames.
 * **Resources & Storage:** Export local storage, session storage, cookies, scripts, stylesheets, iframes, and images dynamically in the Resources panel.
+* **System Info:** Export all system, browser, OS, location, and device metrics from the Info panel.
+* **Unified Debug Report:** Compile all System Info, active Console Logs, captured Network Requests, Local/Session Storage items, and Cookies into a **single, comprehensive Markdown report file** (`debug_report.md`) with a single click from the Info panel control bar.
 
 ## Related Projects
 

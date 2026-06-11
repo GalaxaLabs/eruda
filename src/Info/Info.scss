@@ -10,8 +10,11 @@
       font-size: $font-size;
       color: var(--primary);
     }
-    .export-info {
+    .export-report {
       right: 0;
+    }
+    .export-info {
+      right: 23px;
     }
   }
   .info-content {
