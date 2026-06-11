@@ -106,7 +106,7 @@ export default class Resources extends Tool {
       <div class="${c('btn refresh-script')}">
         <span class="${c('icon-refresh')}"></span>
       </div>
-      ${exportButtonHtml('export-script')}
+      ${c(exportButtonHtml('export-script'))}
     </h2>
     <ul class="${c('link-list')}">
       ${scriptDataHtml}
@@ -148,7 +148,7 @@ export default class Resources extends Tool {
       <div class="${c('btn refresh-stylesheet')}">
         <span class="${c('icon-refresh')}"></span>
       </div>
-      ${exportButtonHtml('export-stylesheet')}
+      ${c(exportButtonHtml('export-stylesheet'))}
     </h2>
     <ul class="${c('link-list')}">
       ${stylesheetDataHtml}
@@ -189,7 +189,7 @@ export default class Resources extends Tool {
       <div class="${c('btn refresh-iframe')}">
         <span class="${c('icon-refresh')}"></span>
       </div>
-      ${exportButtonHtml('export-iframe')}
+      ${c(exportButtonHtml('export-iframe'))}
     </h2>
     <ul class="${c('link-list')}">
       ${iframeDataHtml}
@@ -266,7 +266,7 @@ export default class Resources extends Tool {
       <div class="${c('btn refresh-image')}">
         <span class="${c('icon-refresh')}"></span>
       </div>
-      ${exportButtonHtml('export-image')}
+      ${c(exportButtonHtml('export-image'))}
     </h2>
     <ul class="${c('image-list')}">
       ${imageDataHtml}
