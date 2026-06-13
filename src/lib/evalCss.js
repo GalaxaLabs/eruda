@@ -23,6 +23,7 @@ const exports = function (css, container) {
   const el = document.createElement('style')
 
   el.type = 'text/css'
+  el.setAttribute('data-eruda-style', '')
   container.appendChild(el)
 
   const style = { css, el, container }

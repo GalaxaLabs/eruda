@@ -1,21 +1,29 @@
 const EXPORT_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" fill="currentColor" width="16px" height="16px"><path d="M216,112v96a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V112A16,16,0,0,1,56,96h64v48a8,8,0,0,0,16,0V96h64A16,16,0,0,1,216,112ZM136,43.31l26.34,26.35a8,8,0,0,0,11.32-11.32l-40-40a8,8,0,0,0-11.32,0l-40,40a8,8,0,0,0,11.32,11.32L120,43.31V96a8,8,0,0,0,16,0Z"/></svg>'
 
-export function exportButtonHtml(className) {
-  return `<div class="btn ${className}" title="Export to Markdown">${EXPORT_ICON}</div>`
+export function exportButtonHtml(className, title = 'Export to Markdown') {
+  return `<div class="btn ${className}" title="${title}">${EXPORT_ICON}</div>`
+}
+
+export function downloadHtml(filename, content) {
+  downloadBlob(filename, 'text/html', content)
 }
 
 export function downloadMarkdown(filename, content) {
-  const blob = new Blob([content], { type: 'text/markdown' })
+  downloadBlob(filename, 'text/markdown', content)
+}
+
+export function getExportFileName(name, ext = 'md') {
+  return `${getExportFilePrefix()}_${name}.${ext}`
+}
+
+function downloadBlob(filename, type, content) {
+  const blob = new Blob([content], { type })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url
   a.download = filename
   a.click()
   URL.revokeObjectURL(url)
-}
-
-export function getExportFileName(name) {
-  return `${getExportFilePrefix()}_${name}.md`
 }
 
 export function formatStorageMarkdown(title, items, getValue) {

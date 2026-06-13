@@ -16,6 +16,11 @@ import evalCss from '../lib/evalCss'
 import Detail from './Detail'
 import chobitsu from '../lib/chobitsu'
 import emitter from '../lib/emitter'
+import {
+  downloadHtml,
+  exportButtonHtml,
+  getExportFileName,
+} from '../Resources/export'
 import { formatNodeName } from './util'
 
 export default class Elements extends Tool {
@@ -132,6 +137,7 @@ export default class Elements extends Tool {
           <span class="icon icon-eye show-detail"></span>
           <span class="icon icon-copy copy-node"></span>
           <span class="icon icon-delete delete-node"></span>
+          ${exportButtonHtml('export-html', 'Export HTML')}
         </div>
         <div class="dom-viewer-container">
           <div class="dom-viewer"></div>
@@ -189,6 +195,7 @@ export default class Elements extends Tool {
       .on('click', c('.show-detail'), this._showDetail)
       .on('click', c('.copy-node'), this._copyNode)
       .on('click', c('.delete-node'), this._deleteNode)
+      .on('click', c('.export-html'), this._exportHtml)
 
     this._domViewer.on('select', this._setNode).on('deselect', this._back)
 
@@ -227,6 +234,16 @@ export default class Elements extends Tool {
     }
 
     this._container.notify('Copied', { icon: 'success' })
+  }
+  _exportHtml = () => {
+    const html = getPageHtml()
+
+    if (!html) {
+      this._container.notify('No HTML to export', { icon: 'error' })
+      return
+    }
+
+    downloadHtml(getExportFileName('html', 'html'), html)
   }
   _toggleSelect = () => {
     this._$el.find(c('.select')).toggleClass(c('active'))
@@ -300,6 +317,24 @@ export default class Elements extends Tool {
 }
 
 const isElExist = (val) => isEl(val) && val.parentNode
+
+function getPageHtml() {
+  const htmlEl = document.documentElement.cloneNode(true)
+
+  removeErudaNodes(htmlEl)
+
+  return htmlEl.outerHTML || ''
+}
+
+function removeErudaNodes(root) {
+  const nodes = root.querySelectorAll(
+    '#eruda, .__chobitsu-hide__, .eruda-style-container, style[data-eruda-style]'
+  )
+
+  for (let i = 0, len = nodes.length; i < len; i++) {
+    nodes[i].parentNode.removeChild(nodes[i])
+  }
+}
 
 function getCrumbs(el) {
   const ret = []

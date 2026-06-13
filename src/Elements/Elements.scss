@@ -20,6 +20,20 @@
     .icon-delete {
       right: 46px;
     }
+    .export-html {
+      right: 69px;
+      position: absolute;
+      top: 0;
+      padding: 10px;
+      width: 36px;
+      height: 36px;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: inherit;
+    }
   }
   .dom-viewer-container {
     @include overflow-auto();
@@ -229,6 +243,9 @@
         }
         .icon-delete {
           right: 23px;
+        }
+        .export-html {
+          right: 46px;
         }
       }
     }
